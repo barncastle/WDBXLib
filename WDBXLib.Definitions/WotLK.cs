@@ -567,12 +567,12 @@ namespace WDBXLib.Definitions.WotLK
         [DBField(ArraySize: 3)]
         public string[] TextureVariation { get; set; }
         public string PortraitTextureName { get; set; }
+        public int BloodLevel { get; set; }
         public int BloodID { get; set; }
         public int NPCSoundID { get; set; }
         public int ParticleColorID { get; set; }
         public int CreatureGeosetData { get; set; }
         public int ObjectEffectPackageID { get; set; }
-        public int AnimReplacementSetID { get; set; }
     }
 
     [DBTable(Expansion.WotLK)]
