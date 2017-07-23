@@ -153,8 +153,6 @@ namespace WDBXLib.Reader
                 else if (header.IsTypeOf<WDB>())
                 {
                     WDB wdb = (WDB)header;
-                    wdb.ReadExtendedHeader(dbReader, entry.Build);
-
                     using (MemoryStream ms = new MemoryStream(wdb.ReadData(dbReader)))
                     using (BinaryReader dataReader = new BinaryReader(ms, Encoding.UTF8))
                     {
