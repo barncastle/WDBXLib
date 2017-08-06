@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alpha.cs" />
     <Compile Include="Cata.cs" />
     <Compile Include="Classic.cs" />
     <Compile Include="Legion_7_2_0.cs" />
