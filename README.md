@@ -62,8 +62,8 @@ DBC file's localization was handled by a string array followed by a mask. Includ
 * _Mask_: The mask value
 * _this[TextWowEnum locale]_: An indexer that gets/sets the value for a specific language
 
-#### WCH5+ ####
-ADB files don't contain the structual information to be loaded directly so require loading the header information from the associated DB2 file first. To cater for this a _ReadHeader_ function is exposed in the DBReader class which is then feed into the Read function.
+#### WCH5+ / DBCache.bin ####
+These files don't contain the structual information to be loaded directly so require loading the header information from the associated DB2 file first. To cater for this a _ReadHeader_ function is exposed in the DBReader class which is then feed into the Read function.
 
 ```csharp
 var counterpart = DBReader.ReadHeader(@"TestFiles\ArtifactPowerRank.db2");
