@@ -24,7 +24,7 @@ namespace WDBXLib.Reader.FileTypes
         {
             base.ReadHeader(ref dbReader, signature);
 
-            TableHash = dbReader.ReadInt32();
+            TableHash = dbReader.ReadUInt32();
             Build = dbReader.ReadInt32();
             TimeStamp = dbReader.ReadInt32();
             MinId = dbReader.ReadInt32();

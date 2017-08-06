@@ -49,6 +49,7 @@
     <Compile Include="DBHeader.cs" />
     <Compile Include="DBReader.cs" />
     <Compile Include="Extensions\DBReaderExtensions.cs" />
+    <Compile Include="FileTypes\HTFX.cs" />
     <Compile Include="Helpers\DBRowComparer.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Helpers\FieldStructureEntry.cs" />

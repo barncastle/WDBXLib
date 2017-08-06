@@ -51,12 +51,19 @@
   <ItemGroup>
     <Compile Include="DB2UnitTests.cs" />
     <Compile Include="DB6UnitTests.cs" />
+    <Compile Include="DBCacheTests.cs" />
     <Compile Include="DBCUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WCH8UnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="TestFiles\DBCache.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
+    <None Include="TestFiles\TactKey.db2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="TestFiles\Achievement_Category.db2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

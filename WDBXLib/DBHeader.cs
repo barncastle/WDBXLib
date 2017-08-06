@@ -22,7 +22,7 @@ namespace WDBXLib.Reader
         public uint RecordSize { get; protected set; }
         public uint StringBlockSize { get; protected set; }
 
-        public int TableHash { get; protected set; }
+        public uint TableHash { get; protected set; }
         public int LayoutHash { get; protected set; }
         public int MinId { get; protected set; }
         public int MaxId { get; protected set; }

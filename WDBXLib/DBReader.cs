@@ -77,6 +77,9 @@ namespace WDBXLib.Reader
                 case "WRDN":
                     header = new WDB();
                     break;
+                case "HTFX":
+                    header = new HTFX();
+                    break;
             }
 
             header?.ReadHeader(ref dbReader, signature);
@@ -162,6 +165,18 @@ namespace WDBXLib.Reader
                     stream.Dispose();
                     return entry;
                 }
+                else if (header.IsTypeOf<HTFX>())
+                {
+                    HTFX htfx = (HTFX)header;
+                    using (MemoryStream ms = new MemoryStream(htfx.ReadData(counterpart as WDB6)))
+                    using (BinaryReader dataReader = new BinaryReader(ms, Encoding.UTF8))
+                    {
+                        ReadIntoTable(ref entry, dataReader, new Dictionary<int, string>());
+                    }
+
+                    stream.Dispose();
+                    return entry;
+                }
                 else
                 {
                     stream.Dispose();
@@ -188,7 +203,7 @@ namespace WDBXLib.Reader
             for (uint i = 0; i < recordcount; i++)
             {
                 //Offset map has variable record lengths
-                if (entry.Header.HasOffsetTable)
+                if (entry.Header.HasOffsetTable || entry.Header.IsTypeOf<HTFX>())
                     recordsize = (uint)entry.Header.OffsetLengths[i];
 
                 //Store start position
@@ -299,7 +314,7 @@ namespace WDBXLib.Reader
                     dbReader.BaseStream.Position += sizeof(float) * padding;
                     break;
                 case TypeCode.String:
-                    if (entry.Header.IsTypeOf<WDB>() || entry.Header.HasOffsetTable)
+                    if (entry.Header.IsTypeOf<WDB>() || entry.Header.IsTypeOf<HTFX>() || entry.Header.HasOffsetTable)
                     {
                         value = dbReader.ReadStringNull();
                     }
@@ -536,7 +551,7 @@ namespace WDBXLib.Reader
             if (!header.IsTypeOf<DBHeader>())
                 throw new Exception("Unknown file type.");
 
-            if (header.RecordCount == 0 || header.RecordSize == 0)
+            if (!header.IsTypeOf<HTFX>() && (header.RecordCount == 0 || header.RecordSize == 0))
                 throw new Exception("File contains no records.");
 
             Build = attr.Build;

@@ -43,7 +43,6 @@ namespace WDBXLib.Storage
             this.Build = build;
         }
 
-
         /// <summary>
         /// Generates a Bit map for all columns as the Blizzard one combines array columns
         /// </summary>
