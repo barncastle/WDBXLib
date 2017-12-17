@@ -53,11 +53,21 @@ namespace WDBXLib.Storage
 			if (!Header.IsTypeOf<WDB5>())
 				return bits;
 
-			int c = 0;
+			int c = 0, f = 0;
 			for (int i = 0; i < TableStructure.Length; i++)
 			{
-				FieldStructureEntry field = Header.FieldStructure[i];
-				bits[c] = new FieldStructureEntry(field?.Bits ?? 0, 0, field?.CommonDataType ?? 0xFF);
+				var dbField = TableStructure[i].GetCustomAttribute<DBFieldAttribute>();
+				if (dbField != null && dbField.Bits > -1)
+				{
+					bits[c] = new FieldStructureEntry(dbField.Bits, 0, (byte)Convert.ChangeType((dbField.DefaultValue ?? 0xFF), TypeCode.Byte));
+				}
+				else
+				{
+					FieldStructureEntry field = Header.FieldStructure[f];
+					bits[c] = new FieldStructureEntry(field?.Bits ?? 0, 0, field?.CommonDataType ?? 0xFF);
+					f++;
+				}
+				
 				c++;
 			}
 

@@ -12,12 +12,14 @@ namespace WDBXLib.Attributes
         public readonly uint ArraySize = 1;
         public readonly uint Padding = 0;
         public readonly object DefaultValue;
+		public readonly short Bits;
 
-        public DBFieldAttribute(uint ArraySize = 1, uint Padding = 0, object DefaultValue = null)
+        public DBFieldAttribute(uint ArraySize = 1, uint Padding = 0, object DefaultValue = null, short Bits = -1)
         {
             this.ArraySize = ArraySize;
             this.Padding = Padding;
             this.DefaultValue = DefaultValue;
-        }
+			this.Bits = Bits;
+		}
     }
 }
