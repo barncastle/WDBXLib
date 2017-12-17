@@ -5938,6 +5938,14 @@ namespace WDBXLib.Definitions.Legion_7_3_0
     }
 
     [DBTable(24492)]
+    public class SoundKitName
+    {
+        [DBKey]
+        public int ID { get; set; }
+        public string Field4 { get; set; }
+    }
+
+    [DBTable(24492)]
     public class SoundOverride
     {
         [DBKey]
