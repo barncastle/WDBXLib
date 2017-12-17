@@ -49,8 +49,6 @@ namespace WDBXLib.Helpers
 
 		public void Add(T item)
 		{
-			FixKeys(GetId(item));
-
 			if (!CanAdd(item))
 				throw new ArgumentException("An item with the same key has already been added.");
 
@@ -160,7 +158,11 @@ namespace WDBXLib.Helpers
 		IEnumerator IEnumerable.GetEnumerator() => _rows.GetEnumerator();
 
 
-		private bool CanAdd(T item) => !_keys.Contains(GetId(item));
+		private bool CanAdd(T item)
+		{
+			FixKeys(GetId(item));
+			return !_keys.Contains(GetId(item));
+		}
 
 		private int GetId(T item) => (int)_primarykey.GetValue(item);
 
