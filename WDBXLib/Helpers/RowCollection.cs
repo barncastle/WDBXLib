@@ -28,7 +28,9 @@ namespace WDBXLib.Helpers
             set
             {
                 int id = GetId(value);
-                if (_keys.Any(x => _keys.IndexOf(id) != index))
+				FixKeys(id);
+
+				if (_keys.Any(x => _keys.IndexOf(id) != index))
                     throw new ArgumentException("An item with the same key has already been added.");
 
                 _rows[index] = value;
@@ -47,7 +49,9 @@ namespace WDBXLib.Helpers
 
         public void Add(T item)
         {
-            if (!CanAdd(item))
+			FixKeys(GetId(item));
+
+			if (!CanAdd(item))
                 throw new ArgumentException("An item with the same key has already been added.");
 
             if (GetId(item) <= 0)
@@ -159,5 +163,11 @@ namespace WDBXLib.Helpers
         private bool CanAdd(T item) => !_keys.Contains(GetId(item));
 
         private int GetId(T item) => (int)_primarykey.GetValue(item);
+
+		private void FixKeys(int value)
+		{
+			int index = _keys.IndexOf(value);
+			_keys[index] = GetId(_rows[index]);
+		}
     }
 }
