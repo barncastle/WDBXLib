@@ -8,166 +8,167 @@ using System.Threading.Tasks;
 
 namespace WDBXLib.Helpers
 {
-    public class RowCollection<T> : IList<T> where T : class
-    {
-        private readonly PropertyInfo _primarykey;
-        private readonly List<T> _rows;
-        private readonly List<int> _keys;
+	public class RowCollection<T> : IList<T> where T : class
+	{
+		private readonly PropertyInfo _primarykey;
+		private readonly List<T> _rows;
+		private readonly List<int> _keys;
 
-        public RowCollection(PropertyInfo primarykey)
-        {
-            _primarykey = primarykey;
-            _rows = new List<T>();
-            _keys = new List<int>();
-        }
+		public RowCollection(PropertyInfo primarykey)
+		{
+			_primarykey = primarykey;
+			_rows = new List<T>();
+			_keys = new List<int>();
+		}
 
 
-        public T this[int index]
-        {
-            get => _rows[index];
-            set
-            {
-                int id = GetId(value);
+		public T this[int index]
+		{
+			get => _rows[index];
+			set
+			{
+				int id = GetId(value);
 				FixKeys(id);
 
 				if (_keys.Any(x => _keys.IndexOf(id) != index))
-                    throw new ArgumentException("An item with the same key has already been added.");
+					throw new ArgumentException("An item with the same key has already been added.");
 
-                _rows[index] = value;
-                _keys[index] = id;
-            }
-        }
+				_rows[index] = value;
+				_keys[index] = id;
+			}
+		}
 
-        public int Count => _rows.Count;
+		public int Count => _rows.Count;
 
-        public int NextKey => _keys.Max() + 1;
+		public int NextKey => _keys.Max() + 1;
 
-        public bool HasDuplicateKeys => _rows.GroupBy(x => GetId(x)).Any(g => g.Count( ) > 1);
+		public bool HasDuplicateKeys => _rows.GroupBy(x => GetId(x)).Any(g => g.Count() > 1);
 
-        public bool IsReadOnly => false;
+		public bool IsReadOnly => false;
 
 
-        public void Add(T item)
-        {
+		public void Add(T item)
+		{
 			FixKeys(GetId(item));
 
 			if (!CanAdd(item))
-                throw new ArgumentException("An item with the same key has already been added.");
+				throw new ArgumentException("An item with the same key has already been added.");
 
-            if (GetId(item) <= 0)
-                _primarykey.SetValue(item, NextKey);
+			if (GetId(item) <= 0)
+				_primarykey.SetValue(item, NextKey);
 
-            _rows.Add(item);
-            _keys.Add(GetId(item));
-        }
+			_rows.Add(item);
+			_keys.Add(GetId(item));
+		}
 
-        public void AddRange(IEnumerable<T> collection)
-        {
-            if (collection.Any(x => !CanAdd(x)))
-                throw new ArgumentException("An item with the same key has already been added.");
+		public void AddRange(IEnumerable<T> collection)
+		{
+			if (collection.Any(x => !CanAdd(x)))
+				throw new ArgumentException("An item with the same key has already been added.");
 
-            _rows.AddRange(collection);
-            _keys.AddRange(collection.Select(x => GetId(x)));
-        }
+			_rows.AddRange(collection);
+			_keys.AddRange(collection.Select(x => GetId(x)));
+		}
 
-        public void Clear()
-        {
-            _rows.Clear();
-            _keys.Clear();
-        }
+		public void Clear()
+		{
+			_rows.Clear();
+			_keys.Clear();
+		}
 
-        public bool Contains(T item) => _rows.Contains(item);
+		public bool Contains(T item) => _rows.Contains(item);
 
-        public bool ContainsKey(int id) => _keys.Contains(id);
+		public bool ContainsKey(int id) => _keys.Contains(id);
 
-        public void CopyTo(T[] array, int arrayIndex) => _rows.CopyTo(array, arrayIndex);
+		public void CopyTo(T[] array, int arrayIndex) => _rows.CopyTo(array, arrayIndex);
 
-        public bool Exists(Predicate<T> match) => _rows.Exists(match);
+		public bool Exists(Predicate<T> match) => _rows.Exists(match);
 
-        public T Find(Predicate<T> match) => _rows.Find(match);
+		public T Find(Predicate<T> match) => _rows.Find(match);
 
-        public List<T> FindAll(Predicate<T> match) => _rows.FindAll(match);
+		public List<T> FindAll(Predicate<T> match) => _rows.FindAll(match);
 
-        public T FindByKey(int id)
-        {
-            int index = _keys.IndexOf(id);
-            return index < 0 ? null : _rows[index];
-        }
+		public T FindByKey(int id)
+		{
+			int index = _keys.IndexOf(id);
+			return index < 0 ? null : _rows[index];
+		}
 
-        public int FindIndex(Predicate<T> match) => _rows.FindIndex(match);
+		public int FindIndex(Predicate<T> match) => _rows.FindIndex(match);
 
-        public T FindLast(Predicate<T> match) => _rows.FindLast(match);
+		public T FindLast(Predicate<T> match) => _rows.FindLast(match);
 
-        public int FindLastIndex(Predicate<T> match) => _rows.FindLastIndex(match);
+		public int FindLastIndex(Predicate<T> match) => _rows.FindLastIndex(match);
 
-        public IEnumerator<T> GetEnumerator() => _rows.GetEnumerator();
+		public IEnumerator<T> GetEnumerator() => _rows.GetEnumerator();
 
-        public List<T> GetRange(int index, int count) => _rows.GetRange(index, count);
+		public List<T> GetRange(int index, int count) => _rows.GetRange(index, count);
 
-        public int IndexOf(T item) => _rows.IndexOf(item);
+		public int IndexOf(T item) => _rows.IndexOf(item);
 
-        public void Insert(int index, T item)
-        {
-            if (!CanAdd(item))
-                throw new ArgumentException("An item with the same key has already been added.");
+		public void Insert(int index, T item)
+		{
+			if (!CanAdd(item))
+				throw new ArgumentException("An item with the same key has already been added.");
 
-            _rows.Insert(index, item);
-            _keys.Insert(index, GetId(item));
-        }
+			_rows.Insert(index, item);
+			_keys.Insert(index, GetId(item));
+		}
 
-        public void InsertRange(int index, IEnumerable<T> collection)
-        {
-            if (collection.Any(x => !CanAdd(x)))
-                throw new ArgumentException("An item with the same key has already been added.");
+		public void InsertRange(int index, IEnumerable<T> collection)
+		{
+			if (collection.Any(x => !CanAdd(x)))
+				throw new ArgumentException("An item with the same key has already been added.");
 
-            _rows.InsertRange(index, collection);
-            _keys.InsertRange(index, collection.Select(x => GetId(x)));
-        }
+			_rows.InsertRange(index, collection);
+			_keys.InsertRange(index, collection.Select(x => GetId(x)));
+		}
 
-        public bool Remove(T item)
-        {
-            _keys.RemoveAll(x => x == GetId(item));
-            return _rows.Remove(item);
-        }
+		public bool Remove(T item)
+		{
+			_keys.RemoveAll(x => x == GetId(item));
+			return _rows.Remove(item);
+		}
 
-        public void RemoveAt(int index)
-        {
-            _keys.RemoveAt(index);
-            _rows.RemoveAt(index);
-        }
+		public void RemoveAt(int index)
+		{
+			_keys.RemoveAt(index);
+			_rows.RemoveAt(index);
+		}
 
-        public void RemoveByKey(int key)
-        {
-            int index = _keys.IndexOf(key);
-            if (index >= 0)
-            {
-                _rows.RemoveAt(index);
-                _keys.Remove(key);
-            }
-        }
+		public void RemoveByKey(int key)
+		{
+			int index = _keys.IndexOf(key);
+			if (index >= 0)
+			{
+				_rows.RemoveAt(index);
+				_keys.Remove(key);
+			}
+		}
 
-        public void RemoveRange(int index, int count)
-        {
-            _rows.RemoveRange(index, count);
-            _keys.RemoveRange(index, count);
-        }
+		public void RemoveRange(int index, int count)
+		{
+			_rows.RemoveRange(index, count);
+			_keys.RemoveRange(index, count);
+		}
 
-        public T[] ToArray() => _rows.ToArray();
+		public T[] ToArray() => _rows.ToArray();
 
-        public bool TrueForAll(Predicate<T> match) => _rows.TrueForAll(match);
-
-
-        IEnumerator IEnumerable.GetEnumerator() => _rows.GetEnumerator();
+		public bool TrueForAll(Predicate<T> match) => _rows.TrueForAll(match);
 
 
-        private bool CanAdd(T item) => !_keys.Contains(GetId(item));
+		IEnumerator IEnumerable.GetEnumerator() => _rows.GetEnumerator();
 
-        private int GetId(T item) => (int)_primarykey.GetValue(item);
+
+		private bool CanAdd(T item) => !_keys.Contains(GetId(item));
+
+		private int GetId(T item) => (int)_primarykey.GetValue(item);
 
 		private void FixKeys(int value)
 		{
 			int index = _keys.IndexOf(value);
-			_keys[index] = GetId(_rows[index]);
+			if (index > -1)
+				_keys[index] = GetId(_rows[index]);
 		}
-    }
+	}
 }
